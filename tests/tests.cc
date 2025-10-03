@@ -74,3 +74,53 @@ TEST_CASE("Example: Print Prompt Ledger", "[ex-3]") {
   atm.PrintLedger("./prompt.txt", 12345678, 1234);
   REQUIRE(CompareFiles("./ex-1.txt", "./prompt.txt"));
 }
+
+TEST_CASE("Example: 2 Accounts Created", "[ex-4]") {
+  Atm atm;
+  atm.RegisterAccount(12345678, 1234, "Sam Sepiol", 300.30);
+  REQUIRE_THROWS_AS(atm.RegisterAccount(12345678, 1234, "Sam Sebiol", 300.30),
+                    std::invalid_argument);
+}
+
+TEST_CASE("Example: Negative Amount Withdrawn", "[ex-5]") {
+  Atm atm;
+  atm.RegisterAccount(12345678, 1234, "Sam Sepiol", 300.30);
+  REQUIRE_THROWS_AS(atm.WithdrawCash(12345678, 1234, -1.00),
+                    std::invalid_argument);
+}
+
+TEST_CASE("Example: Incorrect Pin and Card_Num When Withdrawing", "[ex-6]") {
+  Atm atm;
+  atm.RegisterAccount(12345678, 1234, "Sam Sepiol", 300.30);
+  REQUIRE_THROWS_AS(atm.WithdrawCash(12345679, 1235, 1.00),
+                    std::invalid_argument);
+}
+
+TEST_CASE("Example: Balance Will Become Negative When Withdrawing", "[ex-7]") {
+  Atm atm;
+  atm.RegisterAccount(12345678, 1234, "Sam Sepiol", 300.30);
+  REQUIRE_THROWS_AS(atm.WithdrawCash(12345678, 1234, 301.00),
+                    std::runtime_error);
+}
+
+TEST_CASE("Example: Incorrect Pin and Card_Num When Depositing", "[ex-8]") {
+  Atm atm;
+  atm.RegisterAccount(12345678, 1234, "Sam Sepiol", 300.30);
+  REQUIRE_THROWS_AS(atm.DepositCash(12345679, 1235, 301.00),
+                    std::invalid_argument);
+}
+
+TEST_CASE("Example: Negative Amount Deposited", "[ex-9]") {
+  Atm atm;
+  atm.RegisterAccount(12345678, 1234, "Sam Sepiol", 300.30);
+  REQUIRE_THROWS_AS(atm.DepositCash(12345678, 1234, -1.00),
+                    std::invalid_argument);
+}
+
+TEST_CASE("Example: Incorrect Pin and Card_Num When Printing Ledger",
+          "[ex-8]") {
+  Atm atm;
+  atm.RegisterAccount(12345678, 1234, "Sam Sepiol", 300.30);
+  REQUIRE_THROWS_AS(atm.PrintLedger("./text.txt", 12345679, 1235),
+                    std::invalid_argument);
+}
